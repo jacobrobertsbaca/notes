@@ -3,4 +3,4 @@ A competitive piano sight-reading game
 
 ## Requirements
 
-* Unity 2021.3.15f1
+* Unity 2021.3.19f1
