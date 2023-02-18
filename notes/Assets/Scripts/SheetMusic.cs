@@ -8,6 +8,32 @@ using UnityEngine;
 /// </summary>
 public class SheetMusic
 {
+    public struct KeySignature
+    {
+        public static readonly KeySignature CMaj = new KeySignature(
+            NoteName.C,
+            NoteName.D,
+            NoteName.E,
+            NoteName.F,
+            NoteName.G,
+            NoteName.A,
+            NoteName.B
+        );
+
+        private NoteName[] notes;
+
+        /// <summary>
+        /// The note names that make up this key signature.
+        /// </summary>
+        public IReadOnlyList<NoteName> Notes => Notes;
+
+        public KeySignature(params NoteName[] notes)
+        {
+            if (notes.Length != 7) throw new System.Exception("A key signature must have seven notes!");
+            this.notes = notes;
+        }
+    }
+
     public struct TimeSignature
     {
         /// <summary>
@@ -69,22 +95,28 @@ public class SheetMusic
     public TimeSignature Time { get; }
 
     /// <summary>
+    /// The key signature of this song.
+    /// </summary>
+    public KeySignature Key { get; }
+
+    /// <summary>
     /// The notes in this song.
     /// </summary>
     public IReadOnlyList<Note> Notes { get; }
 
-    public SheetMusic(float tempo, TimeSignature time, IEnumerable<Note> notes)
+    public SheetMusic(float tempo, TimeSignature time, KeySignature key, IEnumerable<Note> notes)
     {
         Tempo = tempo;
         Time = time;
+        Key = key;
         Notes = new List<Note>(notes);
     }
 
     public static SheetMusic FromMidi(string filename)
     {
         TimeSignature sig = new TimeSignature(4, 4);
-        Note n1 = new Note(60, 10, 4);
+        Note n1 = new Note(NotePitch.C4, 10, 4);
         List<Note> notes = new List<Note>() { n1 };
-        return new SheetMusic(120, sig, notes);
+        return new SheetMusic(120, sig, KeySignature.CMaj, notes);
     }
 }
