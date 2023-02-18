@@ -33,6 +33,7 @@ public class SheetMusic
             this.notes = notes;
         }
     }
+    private const float kBeatValueConstant = 4;
 
     public struct TimeSignature
     {
@@ -49,7 +50,7 @@ public class SheetMusic
         /// <summary>
         /// The number of beats a given note will be held for.
         /// </summary>
-        public float BeatValue => 4 / TotalBeatsPerMeasure;
+        public float BeatValue => kBeatValueConstant / TotalBeatsPerMeasure;
 
         public TimeSignature(int beatsPerMeasure, float totalBeatsPerMeasure)
         {
