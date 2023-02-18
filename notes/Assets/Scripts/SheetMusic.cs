@@ -25,13 +25,16 @@ public class SheetMusic
         /// <summary>
         /// The note names that make up this key signature.
         /// </summary>
-        public IReadOnlyList<NoteName> Notes => Notes;
+        public IReadOnlyList<NoteName> Notes => notes;
 
         public KeySignature(params NoteName[] notes)
         {
             if (notes.Length != 7) throw new System.Exception("A key signature must have seven notes!");
             this.notes = notes;
         }
+
+        public bool HasNote(NoteName noteName) => Notes.Contains(noteName);
+        public bool HasNote(NotePitch pitch) => HasNote(pitch.Name());
     }
     private const float kBeatValueConstant = 4;
 
