@@ -37,10 +37,10 @@ public class SheetMusic
     public struct Note
     {
         /// <summary>
-        /// Represents a note's pitch. 0 corresponds to note C-1 and 127 corresponds to note G9.
-        /// If this is negative, then this note represents a rest.
+        /// Represents a note's pitch.
+        /// If this is <see cref="NotePitch.Rest"/>, then this note represents a rest.
         /// </summary>
-        public int Pitch { get; }
+        public NotePitch Pitch { get; }
 
         /// <summary>
         /// The beat (in terms of quarter notes) at which this note begins.
@@ -52,7 +52,7 @@ public class SheetMusic
         /// </summary>
         public float Duration { get; }
 
-        public Note(int pitch, float time, float duration)
+        public Note(NotePitch pitch, float time, float duration)
         {
             Pitch = pitch;
             Time = time;
