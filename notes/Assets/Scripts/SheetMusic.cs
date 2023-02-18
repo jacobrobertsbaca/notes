@@ -8,6 +8,8 @@ using UnityEngine;
 /// </summary>
 public class SheetMusic
 {
+    private const float kBeatValueConstant = 4;
+
     public struct TimeSignature
     {
         /// <summary>
@@ -23,7 +25,7 @@ public class SheetMusic
         /// <summary>
         /// The number of beats a given note will be held for.
         /// </summary>
-        public float BeatValue => 4 / TotalBeatsPerMeasure;
+        public float BeatValue => kBeatValueConstant / TotalBeatsPerMeasure;
 
         public TimeSignature(int beatsPerMeasure, float totalBeatsPerMeasure)
         {
