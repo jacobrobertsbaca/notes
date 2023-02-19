@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using static SheetMusic;
 
 public class Staff : MonoBehaviour
 {
@@ -59,6 +60,34 @@ public class Staff : MonoBehaviour
         xform = transform as RectTransform;
         xform.sizeDelta = new Vector2(xform.sizeDelta.x, staffHeight);
         LayoutRebuilder.ForceRebuildLayoutImmediate(xform);
+    }
+
+    // TODO: Need to find right threshold + INTEGRATE
+    public Dictionary<string, string> stats(List<StaffNote> notes, float GOOD_IF_LOWER_THAN=0.02f)
+    {
+        int _bestStreak = 0;
+        //Dictionary<string, int> mostMissedKey = new Dictionary<string, int>();
+        foreach (StaffNote sfnote in notes)
+        {
+            Note note = sfnote.Note;
+            float avgError = sfnote.getError();
+            _bestStreak += (avgError <= GOOD_IF_LOWER_THAN) ? 1 : 0;
+        }
+        string bestStreak = System.Convert.ToString(_bestStreak);
+
+        List<string> myList = new List<string> {
+            "Awesome job out there!",
+            "Tough game, but don't worry, we'll get them next time.",
+            "We all have our off days.",
+            "Fantastic performance today!",
+            "A little rough around the edges, but you still played your heart out. We'll work on a few things in practice and come back even stronger next time." };
+        string ourComment = myList[Random.Range(0, 2)];
+
+        Dictionary<string, string> output = new Dictionary<string, string> {
+            { "bestStreak", bestStreak },
+            { "betterThanLastTime", ourComment}
+        };
+        return output;
     }
 
     public void SetupStaff (SheetMusic music)
