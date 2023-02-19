@@ -137,6 +137,15 @@ public class SheetMusic
         Notes = new List<Note>(notes);
     }
 
+    // Removes all notes less than or equal to pitch
+    public SheetMusic FilterNotes(NotePitch pitch, bool above)
+    {
+        if (above)
+            return new SheetMusic(Tempo, Time, Key, Notes.Where(n => (n.Pitch == NotePitch.Rest) || (n.Pitch >= pitch)));
+        return new SheetMusic(Tempo, Time, Key, Notes.Where(n => (n.Pitch == NotePitch.Rest) || (n.Pitch <= pitch)));
+
+    }
+
     /// <summary>
     /// Loads a <see cref="SheetMusic"/> from a MIDI file.
     /// </summary>
