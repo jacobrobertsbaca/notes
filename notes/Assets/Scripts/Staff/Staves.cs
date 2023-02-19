@@ -121,15 +121,4 @@ public class Staves : MonoBehaviour
             measureMarker.transform.localPosition = new Vector3(beatDistance * (beat - 0.5f), measureMarker.transform.localPosition.y, 0);
         }
     }
-
-    private string seekText = "";
-    private void OnGUI()
-    {
-        seekText = GUI.TextField(new Rect(10, 10, 200, 20), seekText, 25);
-        if (GUI.Button(new Rect(10, 40, 200, 20), "Seek"))
-        {
-            if (float.TryParse(seekText, out float beat))
-                Seek(beat);
-        }
-    }
 }

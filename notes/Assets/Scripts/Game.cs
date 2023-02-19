@@ -75,14 +75,6 @@ public class Game : NetworkBehaviour
         staves.SetupStaves(music);
     }
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(100, 100, 100, 100), "Metron"))
-        {
-            metronomeLow.Play();
-        }
-    }
-
     private void Update()
     {
         if (stage == GameStage.Playing)
