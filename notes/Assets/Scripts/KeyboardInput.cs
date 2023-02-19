@@ -31,6 +31,7 @@ public class KeyboardInput : MonoBehaviour
 
     private readonly Dictionary<NotePitch, float> startTimes = new();
     private readonly List<Note> notes = new();
+    public IReadOnlyList<Note> Notes => notes;
 
     private bool recordingStarted;
     private float tempo;

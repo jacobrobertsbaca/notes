@@ -179,6 +179,10 @@ public class Game : NetworkBehaviour
 
                 // Pan to the winner for a few seconds
                 CameraFollow.Instance.Target = winner.lane.Plane.transform;
+
+                // IN PROGRESS: Generate some offline metrics once we have access to `input` (all the Notes after a run)
+                // input.Notes
+
                 break;
         }
     }
