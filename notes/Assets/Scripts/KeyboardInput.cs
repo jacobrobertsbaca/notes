@@ -36,11 +36,16 @@ public class KeyboardInput : MonoBehaviour
     private float tempo;
     private float beat;
 
-    public void BeginRecording(float tempo)
+    /// <summary>
+    /// The beat we are currently on in the input recording.
+    /// </summary>
+    public float Beat => beat;
+
+    public void BeginRecording(float tempo, float startBeat = 0)
     {
         recordingStarted = true;
         this.tempo = tempo;
-        beat = 0;
+        beat = startBeat;
         notes.Clear();
     }
 

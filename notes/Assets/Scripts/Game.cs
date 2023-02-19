@@ -26,6 +26,9 @@ public class Game : NetworkBehaviour
     // Number of measures after music finishes before finishing game
     private const int kMeasuresAfter = 2;
 
+    // Number of measures to play before music starts
+    private const int kMeasuresBefore = 8;
+
     private static Game current;
 
     private Dictionary<Client, Lane> lanes = new();
@@ -42,6 +45,7 @@ public class Game : NetworkBehaviour
     [SerializeField] private RectTransform laneRoot;
     [SerializeField] private Countdown countdown;
     [SerializeField] private SpawnClouds cloudSpawner;
+    [SerializeField] private KeyboardInput input;
 
     [Header("Audio")]
     [SerializeField] private AudioSource metronomeLow;
@@ -89,11 +93,13 @@ public class Game : NetworkBehaviour
             {
                 metronomeTicks++;
                 metronomeTicks %= music.Time.BeatsPerMeasure;
-                metronomeCounter = 0;
+                metronomeCounter -= music.Time.BeatValue;
                 if (metronomeTicks == 0) metronomeHigh.Play();
                 else metronomeLow.Play();
-                Debug.Log(metronomeTicks);
             }
+
+            // Sample error for current notes
+            staves.SampleError(input);
 
             if (beatCounter > musicLength + kMeasuresAfter * music.Time.BeatValue * music.Time.BeatsPerMeasure)
             {
@@ -152,12 +158,16 @@ public class Game : NetworkBehaviour
                 break;
 
             case GameStage.Playing:
-                beatCounter = -8;
+                beatCounter = -kMeasuresBefore;
+                input.BeginRecording(music.Tempo, -kMeasuresBefore);
                 staves.SetStaffVisibility(1f);
                 cloudSpawner.BeginSpawning();
                 break;
 
             case GameStage.Finished:
+                // Stop recording
+                input.StopRecording();
+
                 // Who is the winner? Whoever is furthest to the right
                 Client[] clients = FindObjectsOfType<Client>();
                 Client winner = clients[0];

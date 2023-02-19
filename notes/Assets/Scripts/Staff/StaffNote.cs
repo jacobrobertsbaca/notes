@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StaffNote : MonoBehaviour
 {
@@ -17,10 +18,16 @@ public class StaffNote : MonoBehaviour
         StaffNote staffNote = staffNoteGO.GetComponent<StaffNote>();
 
         staffNote.staff = staff;
-        staffNote.note = note;
+        staffNote.Note = note;
         staffNote.offset = offset;
         return staffNote;
     }
+
+    [Header("Errors")]
+    [SerializeField] private Color errorColor;
+    [SerializeField] private Color successColor;
+    [SerializeField] private float errorMax;
+    [SerializeField] private float successMax;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject sixteenthPrefab;
@@ -34,10 +41,14 @@ public class StaffNote : MonoBehaviour
     [SerializeField] private RectTransform noteRoot;
     [SerializeField] private RectTransform ledgerLinesRoot;
 
+    public SheetMusic.Note Note { get; private set; }
     private Staff staff;
     private int offset;
-    private SheetMusic.Note note;
     Dictionary<float, GameObject> notePrefabs;
+
+    private float errorAvg = 0;
+    private int errorSamples = 0;
+    private Graphic[] graphics; 
 
     private void Awake()
     {
@@ -55,8 +66,24 @@ public class StaffNote : MonoBehaviour
     {
         CreateNote();
         CreateLedgerLines();
+        graphics = GetComponentsInChildren<Graphic>();
     }
 
+    public void AddErrorSample (float error)
+    {
+        errorSamples++;
+        errorAvg = errorAvg + (error - errorAvg) / errorSamples;
+
+        // Calculate shape color
+        Color color;
+        if (errorAvg >= 0)
+            color = Color.Lerp(Color.white, successColor, errorAvg / successMax);
+        else color = Color.Lerp(Color.white, errorColor, errorAvg / errorMax);
+
+        foreach (var graphic in graphics)
+            graphic.color = color;
+    }
+         
     private void CreateNote()
     {
         // Try to determine which note to instantiate based on the note duration
@@ -66,7 +93,7 @@ public class StaffNote : MonoBehaviour
 
         if (notePrefab == null)
         {
-            Debug.LogWarning($"Failed to find a note prefab for note {note}");
+            Debug.LogWarning($"Failed to find a note prefab for note {Note}");
             return;
         }
 
@@ -90,7 +117,7 @@ public class StaffNote : MonoBehaviour
 
         foreach (float key in notePrefabs.Keys)
         {
-            float delta = Mathf.Abs(key - note.Duration);
+            float delta = Mathf.Abs(key - Note.Duration);
             if (delta < bestDelta)
             {
                 bestDelta = delta;
