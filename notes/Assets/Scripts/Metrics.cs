@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Playground; 
 using static KeyboardInput;
 
 public class Metrics : MonoBehaviour

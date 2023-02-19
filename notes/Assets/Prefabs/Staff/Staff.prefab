@@ -282,7 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b551b138efce741bf401ceac61f2ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  staffHeight: 60
+  staffHeight: 100
   scaleFactor: 0.1
   bottomNote: 64
   staffLines: {fileID: 1232193945382252611}
