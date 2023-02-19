@@ -51,6 +51,10 @@ public class StaffNote : MonoBehaviour
     private int errorSamples = 0;
     private Graphic[] graphics; 
 
+    public float getError() {
+        return this.errorAvg;
+    }
+
     private void Awake()
     {
         notePrefabs = new()
