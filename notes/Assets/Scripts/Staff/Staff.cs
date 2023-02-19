@@ -77,10 +77,10 @@ public class Staff : MonoBehaviour
 
         List<string> myList = new List<string> {
             "Awesome job out there!",
-            "Tough game, but don't worry, we'll get them next time.",
+            "We'll get them next time.",
             "We all have our off days.",
             "Fantastic performance today!",
-            "A little rough around the edges, but you still played your heart out. We'll work on a few things in practice and come back even stronger next time." };
+            "A little rough around the edges!" };
         string ourComment = myList[Random.Range(0, 2)];
 
         Dictionary<string, string> output = new Dictionary<string, string> {
