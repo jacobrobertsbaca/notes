@@ -1,5 +1,7 @@
+using MidiParser;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -55,6 +57,11 @@ public class SheetMusic
         /// </summary>
         public float BeatValue => kBeatValueConstant / TotalBeatsPerMeasure;
 
+        /// <summary>
+        /// Constructor for `TimeSignature` struct
+        /// </summary>
+        /// <param name="beatsPerMeasure">Number of quarter notes in a measure (i.e. the numerator in the time signature).</param>
+        /// <param name="totalBeatsPerMeasure">Number of quarter notes each beat in a measure represents (i.e. the denominator in the time signature).</param>
         public TimeSignature(int beatsPerMeasure, float totalBeatsPerMeasure)
         {
             BeatsPerMeasure = beatsPerMeasure;
@@ -80,12 +87,21 @@ public class SheetMusic
         /// </summary>
         public float Duration { get; }
 
-        public Note(NotePitch pitch, float time, float duration)
+        /// <summary>
+        /// The initial volume of the note, when it was first played.
+        /// </summary>
+        public float Volume { get; }
+
+        public Note(NotePitch pitch, float time, float duration, float volume)
         {
             Pitch = pitch;
             Time = time;
             Duration = duration;
+            Volume = volume;
         }
+
+        public Note(NotePitch pitch, float time, float duration)
+            : this(pitch, time, duration, 1.0f) {}
     }
 
     /// <summary>
@@ -108,6 +124,11 @@ public class SheetMusic
     /// </summary>
     public IReadOnlyList<Note> Notes { get; }
 
+    /// <summary>
+    /// The length of the song in beats
+    /// </summary>
+    public float Length => Notes.Max(n => n.Time + n.Duration);
+
     public SheetMusic(float tempo, TimeSignature time, KeySignature key, IEnumerable<Note> notes)
     {
         Tempo = tempo;
@@ -116,11 +137,95 @@ public class SheetMusic
         Notes = new List<Note>(notes);
     }
 
-    public static SheetMusic FromMidi(string filename)
+    /// <summary>
+    /// Loads a <see cref="SheetMusic"/> from a MIDI file.
+    /// </summary>
+    /// <param name="fileName">Must be in the "StreamingAssets" directory.</param>
+    /// <param name="debug"></param>
+    /// <returns>A <see cref="SheetMusic"/> file.</returns>
+    public static SheetMusic FromMIDI(string fileName, bool debug = false)
     {
-        TimeSignature sig = new TimeSignature(4, 4);
-        Note n1 = new Note(NotePitch.C4, 10, 4);
-        List<Note> notes = new List<Note>() { n1 };
-        return new SheetMusic(120, sig, KeySignature.CMaj, notes);
+        var midiFile = new MidiFile(Path.Combine(Application.streamingAssetsPath, fileName));
+
+        // NOTE: Optional features
+        var midiFileformat = midiFile.Format;                                                 // 0 = single-track, 1 = multi-track, 2 = multi-pattern
+        var ticksPerQuarterNote = midiFile.TicksPerQuarterNote;                               // also known as pulses per quarter note
+
+        // #############################################################################
+        // ################################# META-DATA #################################
+        // #############################################################################
+
+        var metaData = midiFile.Tracks[0].MidiEvents;
+        //Assert.IsTrue((metaData[0].MetaEventType.Equals("TimeSignature"))
+        //    & (metaData[1].MetaEventType.Equals("KeySignature"))
+        //    & (metaData[2].MetaEventType.Equals("Tempo"))
+        //    );
+        var META_DATA = new Dictionary<string, List<float>>()
+        {
+            {"timeSig", new List<float> { metaData[0].Arg2, metaData[0].Arg3 }},              // (numerator, denominator)
+            {"keySig", new List<float> { metaData[1].Arg2, metaData[1].Arg3 }},               // TODO: Understand (sharpsFlats, majorMinor)
+            {"tempo", new List<float> { metaData[2].Arg2 }}
+        };
+
+        // #############################################################################
+        // ################################# NOTE DATA #################################
+        // #############################################################################
+
+        var noteData = midiFile.Tracks[1].MidiEvents;
+
+        string debugSTRING = "";
+
+        // TODO: Can utilize a .removeAt(index) and DP approach to save time
+        //       but will use .remove for speed right now
+        Dictionary<int, (float, float)> activeNotes = new Dictionary<int, (float, float)>();
+        List<Note> playHistory = new List<Note>();
+
+        foreach (var midiEvent in noteData)
+        {
+            if ((midiEvent.MidiEventType == MidiEventType.NoteOn) || (midiEvent.MidiEventType == MidiEventType.NoteOff))
+            {
+                //var channel = midiEvent.Channel;
+                int note = midiEvent.Note;
+                float volume = midiEvent.Velocity;
+                float timeAction = (float)midiEvent.Time;
+
+                if (midiEvent.MidiEventType == MidiEventType.NoteOn)
+                {
+                    // By definition, if we're in this branch, we're encountering/pressing a note for the first time
+                    activeNotes.Add(note, (timeAction, volume));
+                }
+                else
+                {
+                    // Assumption: If we're turning off a note, it must have aleady been on.
+                    //             Turns out that this isn't always true, we need data sanitation.
+                    if (!activeNotes.ContainsKey(note)) { continue; }
+                    float initTimeBeat = activeNotes[note].Item1 / ticksPerQuarterNote;
+                    float noteDuration = (timeAction / ticksPerQuarterNote) - initTimeBeat;
+                    float initVolume = activeNotes[note].Item2;
+                    activeNotes.Remove(note);
+                    Note completedNote = new Note((NotePitch)note, initTimeBeat, noteDuration, initVolume);
+                    playHistory.Add(completedNote);
+
+                    if (debug)
+                    {
+                        debugSTRING += $"Note: {completedNote.Pitch},\tTime: {completedNote.Time},\tDuration {completedNote.Duration},\tVolume: {completedNote.Volume}\n";
+                    }
+                }
+            }
+        }
+
+        if (debug)
+        {
+            Debug.Log(debugSTRING);
+        }
+
+        // #############################################################################
+        // ###################### POPULATE INTO SHEET MUSIC CLASS ######################
+        // #############################################################################
+        TimeSignature ts = new TimeSignature((int)META_DATA["timeSig"][0], (int)META_DATA["timeSig"][1]);
+        KeySignature ks = KeySignature.CMaj;
+        SheetMusic sheet = new SheetMusic(META_DATA["tempo"][0], ts, ks, playHistory);
+
+        return sheet;
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 public class Staff : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class Staff : MonoBehaviour
     [SerializeField]
     private float staffHeight = 60f;
     public float StaffHeight => staffHeight;
+
+    [SerializeField] private float scaleFactor = 0.01f;
+    public float ScaleFactor => scaleFactor * NoteHeight;
 
     [Tooltip("The MIDI note value of the bottom line of this staff")]
     [SerializeField]
@@ -19,42 +23,85 @@ public class Staff : MonoBehaviour
     private RectTransform staffLines;
 
     [SerializeField]
-    private RectTransform scroll;
+    private RectTransform scrollRoot;
 
+    [SerializeField]
+    private LayoutElement clefRegionElement;
+
+    private Staves staves;
     private RectTransform xform;
 
-    // The y value of the smallest (lowest pitch) line and the largest (highest pitch) line
-    private float minY, maxY;
+    private Transform maxLine => staffLines.GetChild(0);
+    private Transform minLine => staffLines.GetChild(staffLines.childCount - 1);
 
     /// <summary>
     /// The vertical space in pixels between two whole notes.
     /// </summary>
-    public float SpaceHeight => (maxY - minY) / 8f;
+    public float NoteHeight => (maxLine.transform.localPosition.y - minLine.transform.localPosition.y) / 8f;
 
     private void Awake()
     {
-        xform = transform as RectTransform;
+        staves = GetComponentInParent<Staves>();
+
+        clefRegionElement.minWidth = staves.ClefRegion;
+        clefRegionElement.preferredWidth = staves.ClefRegion;
 
         // Set the height of the staff
+        xform = transform as RectTransform;
         xform.sizeDelta = new Vector2(xform.sizeDelta.x, staffHeight);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(xform);
+    }
 
-        maxY = staffLines.GetChild(0).localPosition.y;
-        minY = staffLines.GetChild(staffLines.childCount - 1).localPosition.y;
+    //private IEnumerator Start()
+    //{
+    //    yield return new WaitForEndOfFrame();
+    //    PlaceNote(new SheetMusic.Note(NotePitch.D5, 1, 1));
+    //}
+
+    public void SetupStaff (SheetMusic music)
+    {
+        foreach (var note in music.Notes)
+        {
+            PlaceNote(note);
+        }
+    }
+
+    public void Seek(float beat)
+    {
+        scrollRoot.transform.localPosition = new Vector3(
+            staves.PlayheadPosition - beat * staves.BeatDistance,
+            scrollRoot.transform.localPosition.y,
+            0);
     }
 
     // Places a note as a child of `scroll` on the staff
     private void PlaceNote (SheetMusic.Note note)
     {
-
+        int line = ComputeNoteLine(note.Pitch);
+        var staffNote = StaffNote.Create(this, note, line);
+        staffNote.transform.SetParent(scrollRoot);
+        staffNote.transform.localPosition = new Vector3(staves.BeatDistance * note.Time, NoteHeight * (line - 4), 0);
     }
 
-    // Computes how many whole notes this note is away from `bottomNote`
-    // Negative values indicate this note is that many notes lower than `bottomNote`
+    // If `bottomNote` is the lowest note on the staff, then this function computes which line
+    // this note belongs to, assuming the staff lines are numbered like so:
+    //
+    //                  9
+    // ---------------  8
+    //                  7
+    // ---------------  6
+    //                  5
+    // ---------------  4
+    //                  3
+    // ---------------  2
+    //                  1 
+    // ---------------  0
+    //                  -1
     //
     // This assumes that all accidental notes will be flatted--i.e. note D# will be represented as Eb, not D#
     // Note that with this scheme, notes with offset less than or equal to -2 or greater than or equal to 10
     // will require ledger lines.
-    private int ComputeWholeNoteOffset(NotePitch note)
+    private int ComputeNoteLine(NotePitch note)
     {
         Assert.IsTrue(note != NotePitch.Rest);
 
@@ -72,7 +119,4 @@ public class Staff : MonoBehaviour
 
         return offset * dir;
     }
-
-    // Determines the local y position of the note on the staff
-    private float ComputeNoteHeight(NotePitch note) => minY + ComputeWholeNoteOffset(note) * SpaceHeight;
 }
