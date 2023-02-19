@@ -18,7 +18,6 @@ public class StaffNote : MonoBehaviour
 
         staffNote.staff = staff;
         staffNote.note = note;
-        staffNote.noteHeight = staff.NoteHeight;
         staffNote.offset = offset;
         return staffNote;
     }
@@ -37,7 +36,6 @@ public class StaffNote : MonoBehaviour
 
     private Staff staff;
     private int offset;
-    private float noteHeight;
     private SheetMusic.Note note;
 
     private void Start()
@@ -72,7 +70,7 @@ public class StaffNote : MonoBehaviour
 
         GameObject noteObject = Instantiate(notePrefab, noteRoot);
         noteObject.transform.localPosition = Vector3.zero;
-        noteObject.transform.localScale *= staff.ScaleFactor * noteHeight;
+        noteObject.transform.localScale *= staff.ScaleFactor;
 
         if (offset >= kInvertStemLine)
         {
@@ -90,7 +88,7 @@ public class StaffNote : MonoBehaviour
             if (curOffset % 2 != 0) curOffset--;
             while (curOffset >= kLedgerMax)
             {
-                CreateLedgerLine(new Vector3(0, (curOffset - offset) * noteHeight, 1));
+                CreateLedgerLine(new Vector3(0, (curOffset - offset), 1));
                 curOffset -= 2;
             }
         }
@@ -101,7 +99,7 @@ public class StaffNote : MonoBehaviour
             if (curOffset % 2 != 0) curOffset++;
             while (curOffset <= kLedgerMin)
             {
-                CreateLedgerLine(new Vector3(0, (curOffset - offset) * noteHeight, 1));
+                CreateLedgerLine(new Vector3(0, (curOffset - offset), 1));
                 curOffset += 2;
             }
         }
@@ -111,6 +109,6 @@ public class StaffNote : MonoBehaviour
     {
         var ledgerObject = Instantiate(ledgerLinePrefab, ledgerLinesRoot);
         ledgerObject.transform.localPosition = localPosition;
-        ledgerObject.transform.localScale = new Vector3(staff.ScaleFactor * noteHeight, 1f, 1f);
+        ledgerObject.transform.localScale = new Vector3(staff.ScaleFactor, 1f, 1f);
     }
 }
