@@ -13,6 +13,8 @@ public class Plane : MonoBehaviour
     private float baseVelocity;
     private float velocity;
 
+    private Tween shake;
+
     public void SetName(string newName)
     {
         nameText.text = newName;
@@ -26,6 +28,14 @@ public class Plane : MonoBehaviour
     public void AddVelocity(float velocity)
     {
         this.velocity += velocity;
+    }
+
+    public void Shake()
+    {
+        shake.Kill();
+        shake = planeTransform
+            .DOLocalRotate(new Vector3(0, 0, Random.Range(4, 11)), 0.4f)
+            .SetEase(Ease.InOutBounce).SetLoops(2, LoopType.Yoyo);
     }
 
     private void Awake()
