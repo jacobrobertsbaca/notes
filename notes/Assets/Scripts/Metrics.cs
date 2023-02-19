@@ -1,27 +1,39 @@
-using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
-using static KeyboardInput;
-using static SheetMusic; 
+using Unity; 
+using static SheetMusic;
+using System.Diagnostics;
 
-public class Metrics : MonoBehaviour
+public static class Metrics
 {
-    public KeyboardInput Keyboard;
-    // TODO: Implement EVENT Listeners
-
-
-    static string nameOfPiece = "twinkle.mid";
-    SheetMusic music = FromMIDI(nameOfPiece);
-    
-    private void Awake()
+    public static float GetAccuracyScore(KeyboardInput keyInput, SheetMusic music, float beat)
     {
-        music = music.FilterNotes(NotePitch.B3, true);
-        Keyboard.Tempo = music.Tempo;
-        // KeyboardInput keyboard = new KeyboardInput(music); // tempo required for beat calculation TODO: Have game pass this in instead of the SheetMusic? 
-    }
+        // Can't gain or lose anything from playing outside of music bounds
+        if (beat < 0 || beat > music.Length) return 0;
 
-    private void Update()
-    {
-        Debug.Log($"Something cool {music.Notes.Count}"); 
+        var expected = music.GetNotesAt(beat).ToDictionary(n => n.Pitch);
+        var score = 0f;
+
+        foreach (var currentNote in keyInput.CurrentNotes(beat))
+        {
+           if (expected.ContainsKey(currentNote.Pitch))
+            {
+                // We are playing a note that we should be playing
+                score++;
+                expected.Remove(currentNote.Pitch);
+            } else
+            {
+                // We are playing a note that we shouldn't be playing
+                score--;
+            }
+        }
+
+        foreach (var expectedNote in expected.Keys)
+        {
+            // We failed to play a note! Bad!
+            score--;
+        }
+
+        return score;
     }
 }

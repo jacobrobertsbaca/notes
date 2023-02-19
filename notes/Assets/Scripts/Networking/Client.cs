@@ -1,10 +1,13 @@
+using JetBrains.Annotations;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Client : NetworkBehaviour
 {
+    private readonly string[] kPlayerNames = { "RobberBarron", "PreFrosh", "TheBigFreeze", "Leland", "AxeAttack", "MTL" };
     const float kMovementMultiplier = 20;
 
     private NetworkTransformBase netform;
@@ -12,22 +15,32 @@ public class Client : NetworkBehaviour
     private Game game;
     public Lane lane { get; private set; }
 
-    public override void OnStartLocalPlayer()
-    {
-        base.OnStartLocalPlayer();
-    }
+    [SyncVar(hook = nameof(OnPlayerNameChanged))]
+    private string playerName;
+    public string PlayerName => playerName;
 
     public override void OnStartClient()
     {
         base.OnStartClient();
         game = Game.GetOrCreateGame();
-        lane = game.AddLane(this);
+        lane = game.AddLane(this, isLocalPlayer);
 
         netform = GetComponent<NetworkTransformBase>();
         netform.target = lane.Plane.transform;
-        
+
         if (isLocalPlayer)
+        {
             CameraFollow.Instance.Target = lane.Plane.transform;
+            SetPlayerName(GetUsername());
+        }
+
+        OnPlayerNameChanged(null, playerName);
+    }
+
+    [Command]
+    private void SetPlayerName(string name)
+    {
+        playerName = name;
     }
 
     public override void OnStopClient()
@@ -42,20 +55,28 @@ public class Client : NetworkBehaviour
         game.DestroyGame();
     }
 
+    private string GetUsername()
+    {
+        Client[] clients = FindObjectsOfType<Client>();
+        string username = kPlayerNames[Random.Range(0, kPlayerNames.Length)];
+        while (clients.Any(c => c.PlayerName == username))
+        {
+            username = kPlayerNames[Random.Range(0, kPlayerNames.Length)];
+        }
+        return username;
+    }
+
     private void LateUpdate()
     {
-        if (isLocalPlayer)
-        {
-            if (Input.GetKey(KeyCode.LeftArrow))
-                lane.Plane.transform.localPosition += Vector3.left * kMovementMultiplier * Time.deltaTime;
-            else if (Input.GetKey(KeyCode.RightArrow))
-                lane.Plane.transform.localPosition += Vector3.right * kMovementMultiplier * Time.deltaTime;
-        }
-
         if (isServer)
         {
             if (Input.GetKeyDown(KeyCode.Space))
                 game.BeginGame();
         }
+    }
+
+    private void OnPlayerNameChanged(string oldName, string newName)
+    {
+        if (lane != null) lane.Plane.SetName(newName);
     }
 }

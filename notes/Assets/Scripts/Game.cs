@@ -26,9 +26,13 @@ public class Game : NetworkBehaviour
     // Number of measures after music finishes before finishing game
     private const int kMeasuresAfter = 2;
 
+    // Number of measures to play before music starts
+    private const int kMeasuresBefore = 8;
+
     private static Game current;
 
     private Dictionary<Client, Lane> lanes = new();
+    private Lane clientLane;
     private GameStage stage = GameStage.Waiting;
     private SheetMusic music;
     private float musicLength;
@@ -36,12 +40,16 @@ public class Game : NetworkBehaviour
     private float metronomeCounter = 0;
     private int metronomeTicks = 0;
 
+    [SerializeField] private float velocityMultiplier = 5f;
+    [SerializeField] private float baseVelocity = 5f;
+
     [Header("References")]
     [SerializeField] private Staves staves;
     [SerializeField] private Lane lanePrefab;
     [SerializeField] private RectTransform laneRoot;
     [SerializeField] private Countdown countdown;
     [SerializeField] private SpawnClouds cloudSpawner;
+    [SerializeField] private KeyboardInput input;
 
     [Header("Audio")]
     [SerializeField] private AudioSource metronomeLow;
@@ -83,17 +91,26 @@ public class Game : NetworkBehaviour
             beatCounter += beatDelta;
             staves.Seek(beatCounter);
 
+            // Update input
+            input.UpdateInput(beatCounter);
+
             // Each time we cross over a beat boundary, we play the metronome
             metronomeCounter += beatDelta;
             if (metronomeCounter >= music.Time.BeatValue)
             {
                 metronomeTicks++;
                 metronomeTicks %= music.Time.BeatsPerMeasure;
-                metronomeCounter = 0;
+                metronomeCounter -= music.Time.BeatValue;
                 if (metronomeTicks == 0) metronomeHigh.Play();
                 else metronomeLow.Play();
-                Debug.Log(metronomeTicks);
             }
+
+            // Sample error for current notes
+            staves.SampleError(input);
+
+            // Get error and boost plane accordingly
+            float error = Metrics.GetAccuracyScore(input, music, beatCounter);
+            if (error > 0) clientLane.Plane.AddVelocity(velocityMultiplier * error);
 
             if (beatCounter > musicLength + kMeasuresAfter * music.Time.BeatValue * music.Time.BeatsPerMeasure)
             {
@@ -114,10 +131,11 @@ public class Game : NetworkBehaviour
         return current;
     }
 
-    public Lane AddLane(Client client)
+    public Lane AddLane(Client client, bool isLocal = false)
     {
         var lane = Instantiate(lanePrefab.gameObject, laneRoot).GetComponent<Lane>();
         lanes[client] = lane;
+        if (isLocal) clientLane = lane;
         return lane;
     }
 
@@ -152,12 +170,26 @@ public class Game : NetworkBehaviour
                 break;
 
             case GameStage.Playing:
-                beatCounter = -8;
+                beatCounter = -kMeasuresBefore;
+                input.BeginRecording(music.Tempo);
+                input.UpdateInput(-kMeasuresBefore);
                 staves.SetStaffVisibility(1f);
                 cloudSpawner.BeginSpawning();
+
+                // Start moving planes
+                foreach (var lane in lanes.Values)
+                    lane.Plane.SetBaseVelocity(baseVelocity);
+
                 break;
 
             case GameStage.Finished:
+                // Stop recording
+                input.StopRecording();
+
+                // Stop moving planes
+                foreach (var lane in lanes.Values)
+                    lane.Plane.SetBaseVelocity(0f);
+
                 // Who is the winner? Whoever is furthest to the right
                 Client[] clients = FindObjectsOfType<Client>();
                 Client winner = clients[0];
@@ -169,6 +201,10 @@ public class Game : NetworkBehaviour
 
                 // Pan to the winner for a few seconds
                 CameraFollow.Instance.Target = winner.lane.Plane.transform;
+
+                // IN PROGRESS: Generate some offline metrics once we have access to `input` (all the Notes after a run)
+                // input.Notes
+
                 break;
         }
     }

@@ -51,9 +51,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73daed6805e2a994385fef4c4ac5e744, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleFactor: 0.1
+  errorColor: {r: 1, g: 0, b: 0, a: 1}
+  successColor: {r: 0.014198661, g: 1, b: 0, a: 1}
+  errorMax: -0.01
+  successMax: 0.01
   sixteenthPrefab: {fileID: 3598503110521489618, guid: 3c7c53512ac3f584baea6fa5f33c5318, type: 3}
-  eigthPrefab: {fileID: 7979767651603863221, guid: c371264ae8ae68c42bd63638d0c5931d, type: 3}
+  eighthPrefab: {fileID: 0}
   quarterPrefab: {fileID: 6956106655033801335, guid: f5f7641518982024f9717c2b891eeba4, type: 3}
   halfPrefab: {fileID: 1178613046299202034, guid: ba86c29bc55bea349b09c7c68ea3a39f, type: 3}
   wholePrefab: {fileID: 5471187720018734000, guid: ebd6cb2efff3820418689433abca0593, type: 3}

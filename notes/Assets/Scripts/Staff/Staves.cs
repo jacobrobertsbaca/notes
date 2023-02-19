@@ -56,7 +56,7 @@ public class Staves : MonoBehaviour
     {
         clefRegionElement.minWidth = clefRegion;
         clefRegionElement.preferredWidth = clefRegion;
-        playhead.transform.localPosition = new(playheadPosition, transform.localPosition.y, 0);
+        playhead.transform.localPosition = new(playheadPosition, playhead.transform.localPosition.y, 0);
         LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
     }
 
@@ -100,6 +100,12 @@ public class Staves : MonoBehaviour
         {
             staff.SetStaffVisibility(alpha, duration);
         }
+    }
+
+    public void SampleError(KeyboardInput input)
+    {
+        foreach (var staff in staves)
+            staff.SampleError(input);
     }
      
     private void CreateMeasureMarkers (SheetMusic music)

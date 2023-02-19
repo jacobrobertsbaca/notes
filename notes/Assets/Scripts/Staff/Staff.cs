@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -36,6 +37,8 @@ public class Staff : MonoBehaviour
 
     private Staves staves;
     private RectTransform xform;
+    private List<StaffNote> notes = new();
+    private SheetMusic music;
 
     private Transform maxLine => staffLines.GetChild(0);
     private Transform minLine => staffLines.GetChild(staffLines.childCount - 1);
@@ -58,14 +61,9 @@ public class Staff : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(xform);
     }
 
-    //private IEnumerator Start()
-    //{
-    //    yield return new WaitForEndOfFrame();
-    //    PlaceNote(new SheetMusic.Note(NotePitch.D5, 1, 1));
-    //}
-
     public void SetupStaff (SheetMusic music)
     {
+        this.music = music;
         foreach (var note in music.Notes)
         {
             PlaceNote(note);
@@ -86,6 +84,19 @@ public class Staff : MonoBehaviour
         elementCgTween = elementCg.DOFade(alpha, duration);
     }
 
+    public void SampleError(KeyboardInput input)
+    {
+        var expected = music.GetNotesAt(input.Beat);
+
+        // Find the staff notes corresponding to these expected notes
+        var staffNotes = notes.Where(n => expected.Contains(n.Note));
+
+        // Compute accuracy score
+        var score = Metrics.GetAccuracyScore(input, music, input.Beat) * Time.deltaTime;
+        foreach (var note in staffNotes)
+            note.AddErrorSample(score);
+    }
+
     // Places a note as a child of `scroll` on the staff
     private void PlaceNote (SheetMusic.Note note)
     {
@@ -93,6 +104,7 @@ public class Staff : MonoBehaviour
         var staffNote = StaffNote.Create(this, note, line);
         staffNote.transform.SetParent(scrollRoot);
         staffNote.transform.localPosition = new Vector3(staves.BeatDistance * note.Time, NoteHeight * (line - 4), 0);
+        notes.Add(staffNote);
     }
 
     // If `bottomNote` is the lowest note on the staff, then this function computes which line
