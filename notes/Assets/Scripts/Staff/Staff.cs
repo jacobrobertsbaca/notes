@@ -11,6 +11,9 @@ public class Staff : MonoBehaviour
     private float staffHeight = 60f;
     public float StaffHeight => staffHeight;
 
+    private float scaleFactor = 0.01f;
+    public float ScaleFactor => scaleFactor;
+
     [Tooltip("The MIDI note value of the bottom line of this staff")]
     [SerializeField]
     private NotePitch bottomNote;

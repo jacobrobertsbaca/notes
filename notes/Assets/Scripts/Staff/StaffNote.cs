@@ -16,14 +16,12 @@ public class StaffNote : MonoBehaviour
         GameObject staffNoteGO = Instantiate(staffNotePrefab);
         StaffNote staffNote = staffNoteGO.GetComponent<StaffNote>();
 
+        staffNote.staff = staff;
         staffNote.note = note;
         staffNote.noteHeight = staff.NoteHeight;
         staffNote.offset = offset;
         return staffNote;
     }
-
-    [SerializeField]
-    private float scaleFactor;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject sixteenthPrefab;
@@ -37,9 +35,9 @@ public class StaffNote : MonoBehaviour
     [SerializeField] private RectTransform noteRoot;
     [SerializeField] private RectTransform ledgerLinesRoot;
 
+    private Staff staff;
     private int offset;
     private float noteHeight;
-
     private SheetMusic.Note note;
 
     private void Start()
@@ -74,7 +72,7 @@ public class StaffNote : MonoBehaviour
 
         GameObject noteObject = Instantiate(notePrefab, noteRoot);
         noteObject.transform.localPosition = Vector3.zero;
-        noteObject.transform.localScale *= scaleFactor * noteHeight;
+        noteObject.transform.localScale *= staff.ScaleFactor * noteHeight;
 
         if (offset >= kInvertStemLine)
         {
@@ -113,6 +111,6 @@ public class StaffNote : MonoBehaviour
     {
         var ledgerObject = Instantiate(ledgerLinePrefab, ledgerLinesRoot);
         ledgerObject.transform.localPosition = localPosition;
-        ledgerObject.transform.localScale = new Vector3(scaleFactor * noteHeight, 1f, 1f);
+        ledgerObject.transform.localScale = new Vector3(staff.ScaleFactor * noteHeight, 1f, 1f);
     }
 }

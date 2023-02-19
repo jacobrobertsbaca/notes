@@ -97,6 +97,9 @@ public class SheetMusic
             Duration = duration;
             Volume = volume;
         }
+
+        public Note(NotePitch pitch, float time, float duration)
+            : this(pitch, time, duration, 1.0f) {}
     }
 
     /// <summary>
