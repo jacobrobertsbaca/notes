@@ -108,6 +108,11 @@ public class SheetMusic
     /// </summary>
     public IReadOnlyList<Note> Notes { get; }
 
+    /// <summary>
+    /// The length of the song in beats
+    /// </summary>
+    public float Length => Notes.Max(n => n.Time + n.Duration);
+
     public SheetMusic(float tempo, TimeSignature time, KeySignature key, IEnumerable<Note> notes)
     {
         Tempo = tempo;
