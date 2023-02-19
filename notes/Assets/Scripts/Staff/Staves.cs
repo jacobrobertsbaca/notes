@@ -56,19 +56,20 @@ public class Staves : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
 
-        SheetMusic music = new SheetMusic(60,
-            new SheetMusic.TimeSignature(4, 4),
-            SheetMusic.KeySignature.CMaj,
-            new List<SheetMusic.Note>()
-            {
-                new SheetMusic.Note(NotePitch.G5, 0, 1),
-                new SheetMusic.Note(NotePitch.D5, 1, 1),
-                new SheetMusic.Note(NotePitch.D5, 2, 1),
-                new SheetMusic.Note(NotePitch.D5, 3, 1),
-                new SheetMusic.Note(NotePitch.G4, 4, 1),
-                new SheetMusic.Note(NotePitch.D5, 5, 1),
-            });
+        //SheetMusic music = new SheetMusic(60,
+        //    new SheetMusic.TimeSignature(4, 4),
+        //    SheetMusic.KeySignature.CMaj,
+        //    new List<SheetMusic.Note>()
+        //    {
+        //        new SheetMusic.Note(NotePitch.G5, 0, 1),
+        //        new SheetMusic.Note(NotePitch.D5, 1, 1),
+        //        new SheetMusic.Note(NotePitch.D5, 2, 1),
+        //        new SheetMusic.Note(NotePitch.D5, 3, 1),
+        //        new SheetMusic.Note(NotePitch.G4, 4, 1),
+        //        new SheetMusic.Note(NotePitch.D5, 5, 1),
+        //    });
 
+        SheetMusic music = SheetMusic.FromMIDI("twinkle.mid");
         SetupStaves(music);
         Seek(0);
     }

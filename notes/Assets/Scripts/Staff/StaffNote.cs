@@ -24,7 +24,7 @@ public class StaffNote : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject sixteenthPrefab;
-    [SerializeField] private GameObject eigthPrefab;
+    [SerializeField] private GameObject eighthPrefab;
     [SerializeField] private GameObject quarterPrefab;
     [SerializeField] private GameObject halfPrefab;
     [SerializeField] private GameObject wholePrefab;
@@ -37,6 +37,19 @@ public class StaffNote : MonoBehaviour
     private Staff staff;
     private int offset;
     private SheetMusic.Note note;
+    Dictionary<float, GameObject> notePrefabs;
+
+    private void Awake()
+    {
+        notePrefabs = new()
+        {
+            {0.25f, sixteenthPrefab },
+            {0.5f, eighthPrefab },
+            {1f, quarterPrefab },
+            {2f, halfPrefab },
+            {4f, wholePrefab }
+        };
+    }
 
     private void Start()
     {
@@ -46,19 +59,8 @@ public class StaffNote : MonoBehaviour
 
     private void CreateNote()
     {
-        GameObject notePrefab = null;
-
         // Try to determine which note to instantiate based on the note duration
-        if (Mathf.Approximately(note.Duration, 0.25f))
-            notePrefab = sixteenthPrefab;
-        else if (Mathf.Approximately(note.Duration, 0.5f))
-            notePrefab = eigthPrefab;
-        else if (Mathf.Approximately(note.Duration, 1f))
-            notePrefab = quarterPrefab;
-        else if (Mathf.Approximately(note.Duration, 2f))
-            notePrefab = halfPrefab;
-        else if (Mathf.Approximately(note.Duration, 4f))
-            notePrefab = wholePrefab;
+        GameObject notePrefab = GetNotePrefab();
 
         // TODO: Handle dotted notes
 
@@ -80,6 +82,26 @@ public class StaffNote : MonoBehaviour
         }
     }
 
+    private GameObject GetNotePrefab()
+    {
+
+        float? best = null;
+        float bestDelta = float.PositiveInfinity;
+
+        foreach (float key in notePrefabs.Keys)
+        {
+            float delta = Mathf.Abs(key - note.Duration);
+            if (delta < bestDelta)
+            {
+                bestDelta = delta;
+                best = key;
+            }
+        }
+
+        if (best is null) return null;
+        return notePrefabs[best.Value];
+    }
+
     private void CreateLedgerLines()
     {
         if (offset >= kLedgerMax)
@@ -88,7 +110,7 @@ public class StaffNote : MonoBehaviour
             if (curOffset % 2 != 0) curOffset--;
             while (curOffset >= kLedgerMax)
             {
-                CreateLedgerLine(new Vector3(0, (curOffset - offset), 1));
+                CreateLedgerLine(new Vector3(0, (curOffset - offset) * staff.NoteHeight, 1));
                 curOffset -= 2;
             }
         }
@@ -99,7 +121,7 @@ public class StaffNote : MonoBehaviour
             if (curOffset % 2 != 0) curOffset++;
             while (curOffset <= kLedgerMin)
             {
-                CreateLedgerLine(new Vector3(0, (curOffset - offset), 1));
+                CreateLedgerLine(new Vector3(0, (curOffset - offset) * staff.NoteHeight, 1));
                 curOffset += 2;
             }
         }
