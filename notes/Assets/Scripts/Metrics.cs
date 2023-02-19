@@ -1,11 +1,12 @@
 using System.Linq;
 using System.Collections.Generic;
 using Unity; 
-using static SheetMusic; 
+using static SheetMusic;
+using System.Diagnostics;
 
 public static class Metrics
 {
-    private static float GetAccuracyScore(KeyboardInput keyInput, SheetMusic music, float beat)
+    public static float GetAccuracyScore(KeyboardInput keyInput, SheetMusic music, float beat)
     {
         // Can't gain or lose anything from playing outside of music bounds
         if (beat < 0 || beat > music.Length) return 0;
@@ -13,9 +14,9 @@ public static class Metrics
         var expected = music.GetNotesAt(beat).ToDictionary(n => n.Pitch);
         var score = 0f;
 
-        foreach (var currentNote in keyInput.CurrentNotes())
+        foreach (var currentNote in keyInput.CurrentNotes(beat))
         {
-            if (expected.ContainsKey(currentNote.Pitch))
+           if (expected.ContainsKey(currentNote.Pitch))
             {
                 // We are playing a note that we should be playing
                 score++;

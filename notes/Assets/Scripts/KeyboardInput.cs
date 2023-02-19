@@ -12,21 +12,21 @@ public class KeyboardInput : MonoBehaviour
 {
     private readonly IReadOnlyDictionary<KeyCode, NotePitch> keyMappings = new Dictionary<KeyCode, NotePitch>()
     {
-        {KeyCode.A, B4},
-        {KeyCode.S, C5},
-        {KeyCode.D, D5},
-        {KeyCode.F, E5},
-        {KeyCode.G, F5},
-        {KeyCode.H, G5},
-        {KeyCode.J, A5},
-        {KeyCode.K, B5},
-        {KeyCode.L, C6},
-        {KeyCode.R, Eb5},
-        {KeyCode.E, Db5},
-        {KeyCode.Y, Gb5},
-        {KeyCode.U, Ab5},
-        {KeyCode.I, Bb5},
-        {KeyCode.P, B5},
+        {KeyCode.A, B3},
+        {KeyCode.S, C4},
+        {KeyCode.D, D4},
+        {KeyCode.F, E4},
+        {KeyCode.G, F4},
+        {KeyCode.H, G4},
+        {KeyCode.J, A4},
+        {KeyCode.K, B4},
+        {KeyCode.L, C5},
+        {KeyCode.R, Eb4},
+        {KeyCode.E, Db4},
+        {KeyCode.Y, Gb4},
+        {KeyCode.U, Ab4},
+        {KeyCode.I, Bb4},
+        {KeyCode.P, B4},
     };
 
     private readonly Dictionary<NotePitch, float> startTimes = new();
@@ -42,11 +42,10 @@ public class KeyboardInput : MonoBehaviour
     /// </summary>
     public float Beat => beat;
 
-    public void BeginRecording(float tempo, float startBeat = 0)
+    public void BeginRecording(float tempo)
     {
         recordingStarted = true;
         this.tempo = tempo;
-        beat = startBeat;
         notes.Clear();
     }
 
@@ -62,7 +61,7 @@ public class KeyboardInput : MonoBehaviour
     /// note has been held so far.
     /// </summary>
     /// <returns>A list of <see cref="Note"/></returns>
-    public IReadOnlyList<Note> CurrentNotes()
+    public IReadOnlyList<Note> CurrentNotes(float beat)
     {
         List<Note> currentNotes = new();
         foreach (NotePitch pitch in startTimes.Keys)
@@ -112,18 +111,22 @@ public class KeyboardInput : MonoBehaviour
 
                 if (startTimes.TryGetValue((NotePitch)note.noteNumber, out float startBeat))
                 {
-                    notes.Add(new Note((NotePitch)note.noteNumber, startBeat, beat - startBeat));
+                    var pitch = (NotePitch)note.noteNumber;
+                    notes.Add(new Note(pitch, startBeat, beat - startBeat));
+                    startTimes.Remove(pitch);
                 }
             };
         };
 
     }
 
-    private void Update()
+    public void UpdateInput(float beat)
     {
         if (!recordingStarted) return;
 
-        beat += Time.deltaTime * tempo / 60f;
+        this.beat = beat;
+
+        HashSet<NotePitch> toRemove = new();
 
         foreach (KeyCode code in keyMappings.Keys)
         {
@@ -137,7 +140,11 @@ public class KeyboardInput : MonoBehaviour
             if (Input.GetKeyUp(code) && startTimes.TryGetValue(pitch, out float startBeat))
             {
                 notes.Add(new Note(pitch, startBeat, beat - startBeat));
+                toRemove.Add(pitch);
             }
         }
+
+        foreach (NotePitch pitch in toRemove)
+            startTimes.Remove(pitch);
     }
 }

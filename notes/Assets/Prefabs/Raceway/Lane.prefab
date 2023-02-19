@@ -227,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planeTransform: {fileID: 3541059169219342557}
   nameText: {fileID: 450053600}
+  velocityDecay: 2
 --- !u!1 &5800142477500184851
 GameObject:
   m_ObjectHideFlags: 0
@@ -290,7 +291,6 @@ GameObject:
   - component: {fileID: 1898822068132114100}
   - component: {fileID: 6731757580489711922}
   - component: {fileID: 3956808998891748085}
-  - component: {fileID: 4205598021676242710}
   m_Layer: 0
   m_Name: PlaneImage
   m_TagString: Untagged
@@ -370,17 +370,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 3.5
---- !u!114 &4205598021676242710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488652501732296516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f94a4da2f0acba34c928ab8ecc0257f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  planeTransform: {fileID: 0}
-  nameText: {fileID: 0}

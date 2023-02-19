@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class StaffNote : MonoBehaviour
@@ -75,6 +76,8 @@ public class StaffNote : MonoBehaviour
 
     public void AddErrorSample (float error)
     {
+        if (Mathf.Approximately(error, 0)) return;
+
         errorSamples++;
         errorAvg = errorAvg + (error - errorAvg) / errorSamples;
 

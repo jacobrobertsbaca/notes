@@ -53,6 +53,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
+  velocityMultiplier: 0.02
+  baseVelocity: 0.5
   staves: {fileID: 5463055931321346509}
   lanePrefab: {fileID: 5723827061322764530, guid: d3571e3e1028ca1469d14f49bcabd3c3, type: 3}
   laneRoot: {fileID: 4900461606627163341}

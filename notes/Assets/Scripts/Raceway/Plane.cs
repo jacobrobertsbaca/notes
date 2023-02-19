@@ -8,6 +8,25 @@ public class Plane : MonoBehaviour
 {
     [SerializeField] private RectTransform planeTransform;
     [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private float velocityDecay = 2f;
+
+    private float baseVelocity;
+    private float velocity;
+
+    public void SetName(string newName)
+    {
+        nameText.text = newName;
+    }
+
+    public void SetBaseVelocity(float velocity)
+    {
+        baseVelocity = velocity;
+    }
+
+    public void AddVelocity(float velocity)
+    {
+        this.velocity += velocity;
+    }
 
     private void Awake()
     {
@@ -17,5 +36,12 @@ public class Plane : MonoBehaviour
         planeTransform.DOLocalMoveY(Random.Range(-0.2f, 0.2f), 5f)
             .SetEase(Ease.Linear)
             .SetLoops(-1, LoopType.Yoyo);
+    }
+
+    private void LateUpdate()
+    {
+        transform.localPosition += Vector3.right * Time.deltaTime * baseVelocity;
+        transform.localPosition += Vector3.right * Time.deltaTime * velocity;
+        velocity = Mathf.Lerp(velocity, baseVelocity, Time.deltaTime * velocityDecay);
     }
 }
