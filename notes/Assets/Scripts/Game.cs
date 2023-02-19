@@ -50,10 +50,13 @@ public class Game : NetworkBehaviour
     [SerializeField] private Countdown countdown;
     [SerializeField] private SpawnClouds cloudSpawner;
     [SerializeField] private KeyboardInput input;
+    [SerializeField] private CanvasGroup[] cgs;
 
     [Header("Audio")]
     [SerializeField] private AudioSource metronomeLow;
     [SerializeField] private AudioSource metronomeHigh;
+
+    private Sequence cgSequence;
 
     private void Awake()
     {
@@ -62,6 +65,9 @@ public class Game : NetworkBehaviour
         // Hide the staff initially
         staves.SetVisibility(0, 0);
         staves.SetStaffVisibility(0, 0);
+
+        // Hide game at first
+        SetVisibility(false, false);
     }
 
     private IEnumerator Start()
@@ -73,6 +79,10 @@ public class Game : NetworkBehaviour
         music = SheetMusic.FromMIDI("twinkle-V2.mid").FilterNotes(NotePitch.C4, true);
         musicLength = music.Length;
         staves.SetupStaves(music);
+
+        // Wait for one second and then fade in game
+        yield return new WaitForSeconds(1f);
+        SetVisibility(true);
     }
 
     private void Update()
@@ -204,5 +214,19 @@ public class Game : NetworkBehaviour
     public void DestroyGame()
     {
         Destroy(gameObject);
+    }
+
+    public void SetVisibility (bool visible, bool animate = true)
+    {
+        cgSequence.Kill();
+        float alpha = visible ? 1 : 0;
+        if (animate)
+        {
+            Sequence s = DOTween.Sequence();
+            foreach (var cg in cgs) s.Insert(0, cg.DOFade(alpha, 0.7f));
+        } else
+        {
+            foreach (var cg in cgs) cg.alpha = alpha;
+        }
     }
 }
