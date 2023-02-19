@@ -134,6 +134,8 @@ GameObject:
   - component: {fileID: 247905993}
   - component: {fileID: 247905992}
   - component: {fileID: 247905991}
+  - component: {fileID: 247905994}
+  - component: {fileID: 247905995}
   m_Layer: 0
   m_Name: Triangle
   m_TagString: Untagged
@@ -153,7 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fabb2421b9eda41e3bac5a31705d2641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NoteKeyCodes: 6100000073000000640000006600000067000000680000006a0000006b0000006c000000
 --- !u!212 &247905992
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -221,3 +222,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &247905994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247905990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e95faca56a4314111b18f2c930aae454, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Keyboard: {fileID: 247905991}
+--- !u!81 &247905995
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247905990}
+  m_Enabled: 1
