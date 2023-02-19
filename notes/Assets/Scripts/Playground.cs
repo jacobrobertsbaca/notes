@@ -14,4 +14,3 @@ public class Playground : MonoBehaviour
         Debug.Log($"Number of notes after stripping: {sheet.Notes.Count}");
     }
 }
-
