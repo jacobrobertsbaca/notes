@@ -48,6 +48,7 @@ public class Staves : MonoBehaviour
     /// </summary>
     [SerializeField]
     private Staff[] staves;
+    public IReadOnlyList<Staff> Staffs => staves;
 
     private SheetMusic music;
     private Tween cgTween, elementCgTween;

@@ -32,7 +32,7 @@ public class Game : NetworkBehaviour
     private static Game current;
 
     private Dictionary<Client, Lane> lanes = new();
-    private Lane clientLane;
+    private Client localClient;
     private GameStage stage = GameStage.Waiting;
     private SheetMusic music;
     private float musicLength;
@@ -51,6 +51,8 @@ public class Game : NetworkBehaviour
     [SerializeField] private SpawnClouds cloudSpawner;
     [SerializeField] private KeyboardInput input;
     [SerializeField] private CanvasGroup[] cgs;
+    [SerializeField] private ResultsOverlay overlay;
+    [SerializeField] private WinnerText winnerText;
 
     [Header("Audio")]
     [SerializeField] private AudioSource metronomeLow;
@@ -112,7 +114,7 @@ public class Game : NetworkBehaviour
 
             // Get error and boost plane accordingly
             float error = Metrics.GetAccuracyScore(input, music, beatCounter);
-            if (error > 0) clientLane.Plane.AddVelocity(velocityMultiplier * error);
+            if (error > 0) localClient.lane.Plane.AddVelocity(velocityMultiplier * error);
 
             if (beatCounter > musicLength + kMeasuresAfter * music.Time.BeatValue * music.Time.BeatsPerMeasure)
             {
@@ -137,7 +139,7 @@ public class Game : NetworkBehaviour
     {
         var lane = Instantiate(lanePrefab.gameObject, laneRoot).GetComponent<Lane>();
         lanes[client] = lane;
-        if (isLocal) clientLane = lane;
+        if (isLocal) localClient = client;
         return lane;
     }
 
@@ -202,7 +204,23 @@ public class Game : NetworkBehaviour
                 }
 
                 // Pan to the winner for a few seconds
+                staves.SetVisibility(0f);
                 CameraFollow.Instance.Target = winner.lane.Plane.transform;
+                winnerText.SetUsername(winner.PlayerName);
+                winnerText.SetVisibility(true);
+
+                Sequence s = DOTween.Sequence();
+                s.AppendInterval(6f);
+                s.AppendCallback(() => winnerText.SetVisibility(false));
+                s.AppendInterval(2f);
+                s.AppendCallback(() => {
+                    overlay.userText.text = localClient.PlayerName;
+                    overlay.accuracyText.text = "85%";
+                    var statsDict = staves.Staffs[0].stats();
+                    overlay.streakText.text = $"Best Streak: {statsDict["bestStreak"]}";
+                    overlay.performanceText.text = statsDict["betterThanLastTime"];
+                    overlay.SetVisibility(true);
+                });
 
                 // IN PROGRESS: Generate some offline metrics once we have access to `input` (all the Notes after a run)
                 // input.Notes

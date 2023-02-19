@@ -63,7 +63,7 @@ public class Staff : MonoBehaviour
     }
 
     // TODO: Need to find right threshold + INTEGRATE
-    public Dictionary<string, string> stats(List<StaffNote> notes, float GOOD_IF_LOWER_THAN=0.02f)
+    public Dictionary<string, string> stats(float GOOD_IF_LOWER_THAN=0.02f)
     {
         int _bestStreak = 0;
         //Dictionary<string, int> mostMissedKey = new Dictionary<string, int>();
