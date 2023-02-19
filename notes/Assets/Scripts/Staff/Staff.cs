@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,11 @@ public class Staff : MonoBehaviour
 
     [SerializeField]
     private LayoutElement clefRegionElement;
+
+    [SerializeField]
+    private CanvasGroup elementCg;
+
+    private Tween elementCgTween;
 
     private Staves staves;
     private RectTransform xform;
@@ -72,6 +78,12 @@ public class Staff : MonoBehaviour
             staves.PlayheadPosition - beat * staves.BeatDistance,
             scrollRoot.transform.localPosition.y,
             0);
+    }
+
+    public void SetStaffVisibility(float alpha, float duration)
+    {
+        elementCgTween.Kill();
+        elementCgTween = elementCg.DOFade(alpha, duration);
     }
 
     // Places a note as a child of `scroll` on the staff

@@ -237,4 +237,11 @@ public class SheetMusic
 
         return sheet;
     }
+
+    public IReadOnlyList<Note> GetNotesAt(float beat)
+    {
+        return (from note in Notes
+                where beat >= note.Time && beat <= note.Time + note.Duration
+                select note).ToList();
+    }
 }

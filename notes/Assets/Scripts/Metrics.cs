@@ -1,27 +1,30 @@
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using static KeyboardInput;
 using static SheetMusic; 
 
-public class Metrics : MonoBehaviour
+public static class Metrics
 {
-    public KeyboardInput Keyboard;
-    // TODO: Implement EVENT Listeners
-
-
-    static string nameOfPiece = "twinkle.mid";
-    SheetMusic music = FromMIDI(nameOfPiece);
-    
-    private void Awake()
+    private static float GetAccuracyScore(KeyboardInput input, SheetMusic music, float beat)
     {
-        music = music.FilterNotes(NotePitch.B3, true);
-        Keyboard.Tempo = music.Tempo;
-        // KeyboardInput keyboard = new KeyboardInput(music); // tempo required for beat calculation TODO: Have game pass this in instead of the SheetMusic? 
-    }
+        var expected = music.GetNotesAt(beat).ToDictionary(n => n.Pitch);
+        var score = 0f;
 
-    private void Update()
-    {
-        Debug.Log($"Something cool {music.Notes.Count}"); 
+        foreach (var currentNote in input.CurrentNotes())
+        {
+            if (expected.ContainsKey(currentNote.Pitch))
+            {
+                // We are playing a note that we should be playing
+                score++;
+            } else
+            {
+                // We are playing a note that we shouldn't be playing
+                score--;
+            }
+        }
+
+        return score;
     }
 }
