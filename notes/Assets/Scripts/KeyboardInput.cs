@@ -11,15 +11,6 @@ using static Metrics;
 public class KeyboardInput: MonoBehaviour
 {
 
-    //UnityEvent NotePlayed = new UnityEvent();
-
-
-    //float StartTime = 0;
-    //bool gameStarted = false;
-    //List<Note> NotesPlayed = new List<Note>();
-    //SheetMusic music;
-    //float Tempo = 0;
-
     public float Tempo { get; set;  }
 
     public SheetMusic Music { get;  }
@@ -31,9 +22,6 @@ public class KeyboardInput: MonoBehaviour
     public float StartTime { get; set; }
 
     public bool gameStarted { get; set; }
-
-
-
 
     private static readonly IReadOnlyDictionary<KeyCode, NotePitch> KeyCodeToPitch = new Dictionary<KeyCode, NotePitch>() {
         {KeyCode.A, B4},
@@ -53,8 +41,6 @@ public class KeyboardInput: MonoBehaviour
         {KeyCode.P, B5},
     };
 
-
-
     private static readonly List<KeyCode> NoteKeyCodes = new List<KeyCode>()
     {
         KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F,
@@ -62,34 +48,6 @@ public class KeyboardInput: MonoBehaviour
         KeyCode.L, KeyCode.R, KeyCode.E,
         KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.P
 };
-
-
-//public KeyboardInput(SheetMusic music)
-//    {
-//        Tempo = music.Tempo;
-//        StartTime = 0;
-//        gameStarted = false;
-//    }
-
-//    public void setMusic(SheetMusic m)
-//    {
-//        music = m;
-//        Tempo = music.Tempo;
-//        Debug.Log("This is my TEMPO BABY: " + Tempo); 
-//}
-
-    /// <summary>
-    /// List of all keys that are mapped to notes.
-    /// Specifically the home row of virtualpiano.net
-    /// </summary>
-
-
-
-
-    /// <summary>
-    /// Dictionary of all of the KeyCodes from a user's keyboard to the NotePitch
-    /// </summary>
-
 
     void Update()
     {
@@ -112,11 +70,12 @@ public class KeyboardInput: MonoBehaviour
                 if (Input.GetKeyUp(tempkey))
                 {
                     Debug.Log("Amount of time Pressed for key: " + tempkey);
-                    float noteDuration = (Time.time - StartTime) * (Tempo/60);
-                    Debug.Log("This is the TEMPO" + Tempo); 
+                    float noteDuration = (Time.time - StartTime) * (Tempo / 60);
+                    Debug.Log("This is the TEMPO" + Tempo);
                     NotePitch notePitch = KeyCodeToPitch[tempkey];
                     NotesPlayed.Add(new Note(notePitch, StartTime, noteDuration, 20));
                     Debug.Log("Duration: " + noteDuration + ", " + "Start Time: " + StartTime + ", " + "Note Pitch: " + notePitch);
+                }
             }
         }
     }
