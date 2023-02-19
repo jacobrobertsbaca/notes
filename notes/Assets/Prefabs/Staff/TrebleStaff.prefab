@@ -108,6 +108,7 @@ GameObject:
   - component: {fileID: 3254223743025360139}
   - component: {fileID: 3254223743025360132}
   - component: {fileID: 3254223743025360133}
+  - component: {fileID: 8254442792340085100}
   m_Layer: 5
   m_Name: ScrollRegion
   m_TagString: Untagged
@@ -183,6 +184,18 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!225 &8254442792340085100
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3254223743025360138}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3254223743350976269
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,6 +267,7 @@ GameObject:
   - component: {fileID: 3254223743807787984}
   - component: {fileID: 3254223743807787985}
   - component: {fileID: 3254223743807787986}
+  - component: {fileID: 5047974729678141606}
   m_Layer: 5
   m_Name: TrebleStaff
   m_TagString: Untagged
@@ -335,15 +349,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d06f062dc8354f41820b8ccfe2c3f6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beatDistance: 50
+  beatDistance: 150
   clefRegion: 60
   playheadPosition: 300
   measureMarkerPrefab: {fileID: 6489995842252379274, guid: 6f83a4b1e71a72844a63c71bf7666700, type: 3}
   clefRegionElement: {fileID: 3254223743939019361}
   scrollRoot: {fileID: 3254223743888032886}
   playhead: {fileID: 3254223742792990358}
+  cg: {fileID: 5047974729678141606}
+  elementCg: {fileID: 8254442792340085100}
   staves:
   - {fileID: 3254223743985445885}
+--- !u!225 &5047974729678141606
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3254223743807787990}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3254223743888032885
 GameObject:
   m_ObjectHideFlags: 0
