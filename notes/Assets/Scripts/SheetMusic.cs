@@ -1,4 +1,5 @@
 using MidiParser;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -69,7 +70,7 @@ public class SheetMusic
         }
     }
 
-    public struct Note
+    public struct Note : IEquatable<Note>
     {
         /// <summary>
         /// Represents a note's pitch.
@@ -102,6 +103,17 @@ public class SheetMusic
 
         public Note(NotePitch pitch, float time, float duration)
             : this(pitch, time, duration, 1.0f) {}
+
+        public bool Equals(Note other) => Pitch == other.Pitch
+            && Mathf.Approximately(Time, other.Time)
+            && Mathf.Approximately(Duration, other.Duration)
+            && Mathf.Approximately(Volume, other.Volume);
+
+        public override bool Equals(object obj) => obj is Note n && Equals(n);
+        public override int GetHashCode() => (Pitch, Time, Duration, Volume).GetHashCode();
+        public static bool operator ==(Note lhs, Note rhs) => lhs.Equals(rhs);
+        public static bool operator !=(Note lhs, Note rhs) => !(lhs == rhs);
+
     }
 
     /// <summary>
