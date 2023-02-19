@@ -127,11 +127,11 @@ public class SheetMusic
         Notes = new List<Note>(notes);
     }
 
-    public static SheetMusic FromMidi(string filename)
-    {
-        TimeSignature sig = new TimeSignature(4, 4);
-        Note n1 = new Note(NotePitch.C4, 10, 4);
-        List<Note> notes = new List<Note>() { n1 };
-        return new SheetMusic(120, sig, KeySignature.CMaj, notes);
-    }
+    //public static SheetMusic FromMidi(string filename)
+    //{
+    //    TimeSignature sig = new TimeSignature(4, 4);
+    //    Note n1 = new Note(NotePitch.C4, 10, 4, 2);
+    //    List<Note> notes = new List<Note>() { n1 };
+    //    return new SheetMusic(120, sig, KeySignature.CMaj, notes);
+    //}
 }

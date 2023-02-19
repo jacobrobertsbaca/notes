@@ -97,7 +97,8 @@ public class Playground : MonoBehaviour
         // ###################### POPULATE INTO SHEET MUSIC CLASS ######################
         // #############################################################################
         TimeSignature ts = new TimeSignature((int) META_DATA["timeSig"][0], (int) META_DATA["timeSig"][1]);
-        SheetMusic sheet = new SheetMusic(META_DATA["tempo"][0], ts, playHistory);
+        KeySignature ks = KeySignature.CMaj;
+        SheetMusic sheet = new SheetMusic(META_DATA["tempo"][0], ts, ks, playHistory);
 
         return sheet;
     }
