@@ -61,6 +61,9 @@ MonoBehaviour:
   countdown: {fileID: 296570557854304033}
   cloudSpawner: {fileID: 8135437694823675943}
   input: {fileID: 2786511667439972834}
+  cgs:
+  - {fileID: 5458439971812809976}
+  - {fileID: 9089284576079579166}
   metronomeLow: {fileID: 1814813108059302156}
   metronomeHigh: {fileID: 1090230189064844147}
 --- !u!114 &6762049906819579939
@@ -125,6 +128,7 @@ GameObject:
   - component: {fileID: 3584819241447061325}
   - component: {fileID: 2165025484216568371}
   - component: {fileID: 5414887691035723804}
+  - component: {fileID: 5458439971812809976}
   m_Layer: 0
   m_Name: Screen Canvas
   m_TagString: Untagged
@@ -215,6 +219,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &5458439971812809976
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758165787920318569}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2242822945729906290
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,6 +243,7 @@ GameObject:
   - component: {fileID: 1410826772414871407}
   - component: {fileID: 7674583529156282449}
   - component: {fileID: 8021640388747921572}
+  - component: {fileID: 9089284576079579166}
   m_Layer: 0
   m_Name: World Canvas
   m_TagString: Untagged
@@ -298,7 +315,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &8021640388747921572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -316,6 +333,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &9089284576079579166
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2242822945729906290}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &2574637149538237570
 GameObject:
   m_ObjectHideFlags: 0
