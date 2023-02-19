@@ -57,8 +57,8 @@ public class Staves : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         //SheetMusic music = new SheetMusic(60,
-        //    new SheetMusic.TimeSignature(4, 4),
         //    SheetMusic.KeySignature.CMaj,
+        //    new SheetMusic.TimeSignature(4, 4),
         //    new List<SheetMusic.Note>()
         //    {
         //        new SheetMusic.Note(NotePitch.G5, 0, 1),
@@ -69,7 +69,7 @@ public class Staves : MonoBehaviour
         //        new SheetMusic.Note(NotePitch.D5, 5, 1),
         //    });
 
-        SheetMusic music = SheetMusic.FromMIDI("twinkle.mid");
+        SheetMusic music = SheetMusic.FromMIDI("twinkle-V2.mid").FilterNotes(NotePitch.C4, true);
         SetupStaves(music);
         Seek(0);
     }

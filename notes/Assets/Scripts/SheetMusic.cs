@@ -138,21 +138,11 @@ public class SheetMusic
     }
 
     // Removes all notes less than or equal to pitch
-    public SheetMusic FilterNotes(NotePitch pitch, string mode = "above")
+    public SheetMusic FilterNotes(NotePitch pitch, bool above)
     {
-        if (mode.Equals("above"))
-        {
-            return new SheetMusic(Tempo, Time, Key, Notes.Where(n => n.Pitch == NotePitch.Rest || n.Pitch > pitch));
-        }
-        else if(mode.Equals("below"))
-        {
-            return new SheetMusic(Tempo, Time, Key, Notes.Where(n => n.Pitch == NotePitch.Rest || n.Pitch <= pitch));
-        }
-        else
-        {
-            // THIS IS AN ERROR.
-            return null;
-        }
+        if (above)
+            return new SheetMusic(Tempo, Time, Key, Notes.Where(n => (n.Pitch == NotePitch.Rest) || (n.Pitch >= pitch)));
+        return new SheetMusic(Tempo, Time, Key, Notes.Where(n => (n.Pitch == NotePitch.Rest) || (n.Pitch <= pitch)));
 
     }
 
