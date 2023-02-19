@@ -50,10 +50,10 @@ public class KeyboardInput : MonoBehaviour
         {KeyCode.P, B5},
     };
 
-    public KeyboardInput(Func)
-    {
+    //public KeyboardInput(Func)
+    //{
 
-    }
+    //}
 
     void Update()
     {
@@ -69,8 +69,8 @@ public class KeyboardInput : MonoBehaviour
             {
                 Debug.Log("Amount of time Pressed for key: " + tempkey);
                 Debug.Log((Time.time - StartTime).ToString("00:00.00"));
-                float noteDuration = Time.time - StartTime; 
-                NotesPlayed.Add(new Note(KeyCodeToPitch[tempkey], StartTime, noteDuration, 20));
+                //float noteDuration = Time.time - StartTime; 
+                NotesPlayed.Add(new Note(KeyCodeToPitch[tempkey], StartTime, Time.time - StartTime, 20));
                 foreach (Note tempNote in NotesPlayed)
                 {
                     Debug.Log("Here is a note you played: " + (NotePitch) tempNote.Pitch);

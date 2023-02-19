@@ -15,9 +15,5 @@ public class Metrics : MonoBehaviour
         
 
     }
-    void Update()
-    {
-        
-    }
 
 }
