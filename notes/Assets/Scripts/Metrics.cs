@@ -1,18 +1,17 @@
-using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
-using static KeyboardInput;
 using static SheetMusic; 
 
 public static class Metrics
 {
-    private static float GetAccuracyScore(KeyboardInput input, SheetMusic music, float beat)
+    private static float GetAccuracyScore(KeyboardInput keyInput, PianoInput pianoInput, SheetMusic music, float beat)
     {
         var expected = music.GetNotesAt(beat).ToDictionary(n => n.Pitch);
         var score = 0f;
 
-        foreach (var currentNote in input.CurrentNotes())
+        List<Note> allCandidates = keyInput.CurrentNotes().Union(pianoInput.CurrentNotes()).ToList();
+
+        foreach (var currentNote in allCandidates)
         {
             if (expected.ContainsKey(currentNote.Pitch))
             {
