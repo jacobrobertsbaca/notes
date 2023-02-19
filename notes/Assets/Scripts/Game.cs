@@ -83,13 +83,16 @@ public class Game : NetworkBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (stage == GameStage.Playing)
         {
             float beatDelta = Time.deltaTime * music.Tempo / 60f;
             beatCounter += beatDelta;
             staves.Seek(beatCounter);
+
+            // Update input
+            input.UpdateInput(beatCounter);
 
             // Each time we cross over a beat boundary, we play the metronome
             metronomeCounter += beatDelta;
@@ -106,7 +109,7 @@ public class Game : NetworkBehaviour
             staves.SampleError(input);
 
             // Get error and boost plane accordingly
-            float error = Metrics.GetAccuracyScore(input, music, input.Beat);
+            float error = Metrics.GetAccuracyScore(input, music, beatCounter);
             if (error > 0) clientLane.Plane.AddVelocity(velocityMultiplier * error);
 
             if (beatCounter > musicLength + kMeasuresAfter * music.Time.BeatValue * music.Time.BeatsPerMeasure)
@@ -168,7 +171,7 @@ public class Game : NetworkBehaviour
 
             case GameStage.Playing:
                 beatCounter = -kMeasuresBefore;
-                input.BeginRecording(music.Tempo, -kMeasuresBefore);
+                input.BeginRecording(music.Tempo);
                 staves.SetStaffVisibility(1f);
                 cloudSpawner.BeginSpawning();
 

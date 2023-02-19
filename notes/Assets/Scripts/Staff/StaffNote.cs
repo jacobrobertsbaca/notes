@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class StaffNote : MonoBehaviour
@@ -80,6 +81,7 @@ public class StaffNote : MonoBehaviour
             color = Color.Lerp(Color.white, successColor, errorAvg / successMax);
         else color = Color.Lerp(Color.white, errorColor, errorAvg / errorMax);
 
+        Debug.Log(error);
         foreach (var graphic in graphics)
             graphic.color = color;
     }
