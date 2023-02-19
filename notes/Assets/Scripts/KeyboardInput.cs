@@ -61,7 +61,7 @@ public class KeyboardInput : MonoBehaviour
     /// note has been held so far.
     /// </summary>
     /// <returns>A list of <see cref="Note"/></returns>
-    public IReadOnlyList<Note> CurrentNotes()
+    public IReadOnlyList<Note> CurrentNotes(float beat)
     {
         List<Note> currentNotes = new();
         foreach (NotePitch pitch in startTimes.Keys)
@@ -111,7 +111,9 @@ public class KeyboardInput : MonoBehaviour
 
                 if (startTimes.TryGetValue((NotePitch)note.noteNumber, out float startBeat))
                 {
-                    notes.Add(new Note((NotePitch)note.noteNumber, startBeat, beat - startBeat));
+                    var pitch = (NotePitch)note.noteNumber;
+                    notes.Add(new Note(pitch, startBeat, beat - startBeat));
+                    startTimes.Remove(pitch);
                 }
             };
         };

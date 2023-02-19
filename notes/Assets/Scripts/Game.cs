@@ -83,7 +83,7 @@ public class Game : NetworkBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (stage == GameStage.Playing)
         {
@@ -172,6 +172,7 @@ public class Game : NetworkBehaviour
             case GameStage.Playing:
                 beatCounter = -kMeasuresBefore;
                 input.BeginRecording(music.Tempo);
+                input.UpdateInput(-kMeasuresBefore);
                 staves.SetStaffVisibility(1f);
                 cloudSpawner.BeginSpawning();
 

@@ -14,9 +14,9 @@ public static class Metrics
         var expected = music.GetNotesAt(beat).ToDictionary(n => n.Pitch);
         var score = 0f;
 
-        foreach (var currentNote in keyInput.CurrentNotes())
+        foreach (var currentNote in keyInput.CurrentNotes(beat))
         {
-            if (expected.ContainsKey(currentNote.Pitch))
+           if (expected.ContainsKey(currentNote.Pitch))
             {
                 // We are playing a note that we should be playing
                 score++;

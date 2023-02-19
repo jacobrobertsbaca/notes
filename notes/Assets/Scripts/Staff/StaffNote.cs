@@ -72,6 +72,8 @@ public class StaffNote : MonoBehaviour
 
     public void AddErrorSample (float error)
     {
+        if (Mathf.Approximately(error, 0)) return;
+
         errorSamples++;
         errorAvg = errorAvg + (error - errorAvg) / errorSamples;
 
@@ -81,7 +83,6 @@ public class StaffNote : MonoBehaviour
             color = Color.Lerp(Color.white, successColor, errorAvg / successMax);
         else color = Color.Lerp(Color.white, errorColor, errorAvg / errorMax);
 
-        Debug.Log(error);
         foreach (var graphic in graphics)
             graphic.color = color;
     }
