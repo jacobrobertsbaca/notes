@@ -15,7 +15,7 @@ public class SpawnClouds : MonoBehaviour
     float time = 1f;
     float maxX;
     float maxY;
-    float minX; 
+    float minX;
     float minY;
     bool allowSpawning = false;
     // Start is called before the first frame update
@@ -31,18 +31,19 @@ public class SpawnClouds : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {   
-        if (allowSpawning) {
+    {
+        if (allowSpawning)
+        {
             gameObject.transform.position += new Vector3(speed * Time.deltaTime, 0, 0);
-            if (time < 0) 
+            if (time < 0)
             {
                 minX = GetComponent<SpriteRenderer>().bounds.min.x;
                 maxX = GetComponent<SpriteRenderer>().bounds.max.x;
-            Vector2 spawnLocation = new Vector2(Random.Range(minX,maxX), Random.Range(minY,maxY));
-            cloudType = Random.Range(0,2);
-            GameObject cloudChoice = clouds[cloudType];
-            Instantiate(cloudChoice, spawnLocation, Quaternion.identity);
-            time = Random.Range(.3f, 2f);
+                Vector2 spawnLocation = new Vector2(Random.Range(minX, maxX), Random.Range(minY, maxY));
+                cloudType = Random.Range(0, 2);
+                GameObject cloudChoice = clouds[cloudType];
+                Instantiate(cloudChoice, spawnLocation, Quaternion.identity);
+                time = Random.Range(.3f, 1.5f);
             }
             time -= Time.deltaTime;
         }

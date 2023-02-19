@@ -15,6 +15,7 @@ public class CloudMovement : MonoBehaviour
         yMovement = Random.Range(-.2f,.2f);
         float opacity = Random.Range(.2f, 1);
         gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, opacity);
+        transform.localScale *= Random.Range(0.3f, 1f);
     }
     // Update is called once per frame
     void Update()

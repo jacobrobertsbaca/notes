@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,12 @@ public class Staves : MonoBehaviour
     [SerializeField]
     private RectTransform playhead;
 
+    [SerializeField]
+    private CanvasGroup cg;
+
+    [SerializeField]
+    private CanvasGroup elementCg;
+
     /// <summary>
     /// The <see cref="Staff"/> that make up this object.
     /// </summary>
@@ -43,6 +50,7 @@ public class Staves : MonoBehaviour
     private Staff[] staves;
 
     private SheetMusic music;
+    private Tween cgTween, elementCgTween;
 
     private void Awake()
     {
@@ -50,28 +58,6 @@ public class Staves : MonoBehaviour
         clefRegionElement.preferredWidth = clefRegion;
         playhead.transform.localPosition = new(playheadPosition, transform.localPosition.y, 0);
         LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
-    }
-
-    private IEnumerator Start()
-    {
-        yield return new WaitForEndOfFrame();
-
-        //SheetMusic music = new SheetMusic(60,
-        //    SheetMusic.KeySignature.CMaj,
-        //    new SheetMusic.TimeSignature(4, 4),
-        //    new List<SheetMusic.Note>()
-        //    {
-        //        new SheetMusic.Note(NotePitch.G5, 0, 1),
-        //        new SheetMusic.Note(NotePitch.D5, 1, 1),
-        //        new SheetMusic.Note(NotePitch.D5, 2, 1),
-        //        new SheetMusic.Note(NotePitch.D5, 3, 1),
-        //        new SheetMusic.Note(NotePitch.G4, 4, 1),
-        //        new SheetMusic.Note(NotePitch.D5, 5, 1),
-        //    });
-
-        SheetMusic music = SheetMusic.FromMIDI("twinkle-V2.mid").FilterNotes(NotePitch.C4, true);
-        SetupStaves(music);
-        Seek(0);
     }
 
     public void SetupStaves (SheetMusic music)
@@ -95,6 +81,24 @@ public class Staves : MonoBehaviour
         foreach (var staff in staves)
         {
             staff.Seek(beat);
+        }
+    }
+
+    // Sets visibility of the entire staff
+    public void SetVisibility (float alpha, float duration = 0.7f)
+    {
+        cgTween.Kill();
+        cgTween = cg.DOFade(alpha, duration);
+    }
+
+    // Sets visibility of only the staff elements
+    public void SetStaffVisibility (float alpha, float duration = 0.7f)
+    {
+        elementCgTween.Kill();
+        elementCgTween = elementCg.DOFade(alpha, duration);
+        foreach (var staff in staves)
+        {
+            staff.SetStaffVisibility(alpha, duration);
         }
     }
      
