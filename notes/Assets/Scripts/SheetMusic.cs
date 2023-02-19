@@ -55,6 +55,11 @@ public class SheetMusic
         /// </summary>
         public float BeatValue => kBeatValueConstant / TotalBeatsPerMeasure;
 
+        /// <summary>
+        /// Constructor for `TimeSignature` struct
+        /// </summary>
+        /// <param name="beatsPerMeasure">Number of quarter notes in a measure (i.e. the numerator in the time signature).</param>
+        /// <param name="totalBeatsPerMeasure">Number of quarter notes each beat in a measure represents (i.e. the denominator in the time signature).</param>
         public TimeSignature(int beatsPerMeasure, float totalBeatsPerMeasure)
         {
             BeatsPerMeasure = beatsPerMeasure;
@@ -80,11 +85,17 @@ public class SheetMusic
         /// </summary>
         public float Duration { get; }
 
-        public Note(NotePitch pitch, float time, float duration)
+        /// <summary>
+        /// The initial volume of the note, when it was first played.
+        /// </summary>
+        public float Volume { get; }
+
+        public Note(NotePitch pitch, float time, float duration, float volume)
         {
             Pitch = pitch;
             Time = time;
             Duration = duration;
+            Volume = volume;
         }
     }
 
@@ -121,11 +132,11 @@ public class SheetMusic
         Notes = new List<Note>(notes);
     }
 
-    public static SheetMusic FromMidi(string filename)
-    {
-        TimeSignature sig = new TimeSignature(4, 4);
-        Note n1 = new Note(NotePitch.C4, 10, 4);
-        List<Note> notes = new List<Note>() { n1 };
-        return new SheetMusic(120, sig, KeySignature.CMaj, notes);
-    }
+    //public static SheetMusic FromMidi(string filename)
+    //{
+    //    TimeSignature sig = new TimeSignature(4, 4);
+    //    Note n1 = new Note(NotePitch.C4, 10, 4, 2);
+    //    List<Note> notes = new List<Note>() { n1 };
+    //    return new SheetMusic(120, sig, KeySignature.CMaj, notes);
+    //}
 }
