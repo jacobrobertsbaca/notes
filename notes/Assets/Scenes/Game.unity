@@ -254,6 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e369e7d59254be644b00a7f0fda2efa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zoomMultiplier: 3.5
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0

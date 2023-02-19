@@ -32,12 +32,16 @@ public class Game : NetworkBehaviour
     private static Game current;
 
     private Dictionary<Client, Lane> lanes = new();
+    private Lane clientLane;
     private GameStage stage = GameStage.Waiting;
     private SheetMusic music;
     private float musicLength;
     private float beatCounter = 0;
     private float metronomeCounter = 0;
     private int metronomeTicks = 0;
+
+    [SerializeField] private float velocityMultiplier = 5f;
+    [SerializeField] private float baseVelocity = 5f;
 
     [Header("References")]
     [SerializeField] private Staves staves;
@@ -101,6 +105,10 @@ public class Game : NetworkBehaviour
             // Sample error for current notes
             staves.SampleError(input);
 
+            // Get error and boost plane accordingly
+            float error = Metrics.GetAccuracyScore(input, music, input.Beat);
+            if (error > 0) clientLane.Plane.AddVelocity(velocityMultiplier * error);
+
             if (beatCounter > musicLength + kMeasuresAfter * music.Time.BeatValue * music.Time.BeatsPerMeasure)
             {
                 NetworkServer.SendToAll(new StageEvent()
@@ -120,10 +128,11 @@ public class Game : NetworkBehaviour
         return current;
     }
 
-    public Lane AddLane(Client client)
+    public Lane AddLane(Client client, bool isLocal = false)
     {
         var lane = Instantiate(lanePrefab.gameObject, laneRoot).GetComponent<Lane>();
         lanes[client] = lane;
+        if (isLocal) clientLane = lane;
         return lane;
     }
 
@@ -162,11 +171,20 @@ public class Game : NetworkBehaviour
                 input.BeginRecording(music.Tempo, -kMeasuresBefore);
                 staves.SetStaffVisibility(1f);
                 cloudSpawner.BeginSpawning();
+
+                // Start moving planes
+                foreach (var lane in lanes.Values)
+                    lane.Plane.SetBaseVelocity(baseVelocity);
+
                 break;
 
             case GameStage.Finished:
                 // Stop recording
                 input.StopRecording();
+
+                // Stop moving planes
+                foreach (var lane in lanes.Values)
+                    lane.Plane.SetBaseVelocity(0f);
 
                 // Who is the winner? Whoever is furthest to the right
                 Client[] clients = FindObjectsOfType<Client>();

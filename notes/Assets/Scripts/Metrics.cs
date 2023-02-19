@@ -4,7 +4,7 @@ using static SheetMusic;
 
 public static class Metrics
 {
-    private static float GetAccuracyScore(KeyboardInput keyInput, SheetMusic music, float beat)
+    public static float GetAccuracyScore(KeyboardInput keyInput, SheetMusic music, float beat)
     {
         // Can't gain or lose anything from playing outside of music bounds
         if (beat < 0 || beat > music.Length) return 0;

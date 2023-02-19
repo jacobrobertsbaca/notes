@@ -12,7 +12,7 @@ public class KeyboardInput : MonoBehaviour
 {
     private readonly IReadOnlyDictionary<KeyCode, NotePitch> keyMappings = new Dictionary<KeyCode, NotePitch>()
     {
-        {KeyCode.A, B4},
+        {KeyCode.A, C4},
         {KeyCode.S, C5},
         {KeyCode.D, D5},
         {KeyCode.F, E5},
