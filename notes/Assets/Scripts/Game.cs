@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Game : NetworkBehaviour
 {
@@ -215,7 +216,7 @@ public class Game : NetworkBehaviour
                 s.AppendInterval(2f);
                 s.AppendCallback(() => {
                     overlay.userText.text = localClient.PlayerName;
-                    overlay.accuracyText.text = "85%";
+                    overlay.accuracyText.text = "Accuracy: " + ((int) Random.Range(40, 81)).ToString();
                     var statsDict = staves.Staffs[0].stats();
                     overlay.streakText.text = $"Best Streak: {statsDict["bestStreak"]}";
                     overlay.performanceText.text = statsDict["betterThanLastTime"];
